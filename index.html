@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=0.9">
+<title>iPhone 4 CSS 3D with Video Screen</title>
+<style>
+/* ---------- Page & background ---------- */
+html, body {
+  margin: 0;
+  height: 100%;
+  background: #00000000;
+  overflow: hidden;
+}
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: url("naughty.jpg") center / cover no-repeat;
+  opacity: 0.7;
+  z-index: 0;
+}
+
+/* ---------- Scene (centred) ---------- */
+#scene3D {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  perspective: 1200px;
+  z-index: 1;
+}
+* {
+  transform-style: preserve-3d;
+}
+#iphone {
+  position: relative;
+  width: 254px;
+  height: 500px;
+  flex: none;
+  will-change: transform;
+}
+
+/* ---------- Slab structure ---------- */
+.slab {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 254px;
+  height: 500px;
+}
+.slab div {
+  position: absolute;
+  transform-origin: 0 0 0;
+}
+.slab .front, .slab .back {
+  width: 254px;
+  height: 500px;
+  background: linear-gradient(to bottom, #ffffff 0%, #f9f9f9 100%);
+  border-radius: 20px;
+}
+.slab .back {
+  background: linear-gradient(to bottom, #a3a3a340 0%, #808080 100%);
+  transform: translate3d(0, 0, -30px);
+}
+.slab .top, .slab .bottom {
+  width: 214px;
+  height: 30px;
+  background: #b6b6b650;
+  transform: translate(20px) rotateX(-90deg);
+}
+.slab .bottom {
+  background: linear-gradient(to right, #6f6f6f 0%, #636363 100%);
+  box-shadow: inset 0 1px 0 #363636;
+  transform: translate(20px, 500px) rotateX(-90deg);
+}
+.slab .right, .slab .left {
+  width: 460px;
+  height: 30px;
+  background: linear-gradient(to right, #a3a3a3 0%, #d6d6d6 10%, #a3a3a3 15%, #808080 100%);
+  transform: translate(254px, 20px) rotateY(-90deg) rotateZ(90deg);
+}
+.slab .left {
+  background: linear-gradient(to right, #a3a3a3 0%, #808080 100%);
+  transform: translate(0, 20px) rotateY(-90deg) rotateZ(90deg);
+}
+
+/* Bevelled corners */
+.slab .top:before, .slab .top:after, .slab .right:before, .slab .right:after,
+.slab .bottom:before, .slab .bottom:after, .slab .left:before, .slab .left:after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -15px;
+  width: 16px;
+  background: linear-gradient(to right, #a3a3a3 0%, #b6b6b6 100%);
+  transform: translateZ(3px) rotateY(22.5deg);
+}
+.slab .top:after, .slab .right:before, .slab .bottom:before {
+  left: auto;
+  right: -15px;
+  background: linear-gradient(to right, #b6b6b6 0%, #a3a3a3 100%);
+  transform: translateZ(3px) rotateY(-22.5deg);
+}
+.slab .right:before {
+  background: linear-gradient(to right, #808080 0%, #636363 100%);
+}
+.slab .right:after {
+  background: #a3a3a3;
+}
+.slab .bottom:before, .slab .left:after {
+  background: #636363;
+  transform: translateZ(-3px) rotateY(22.5deg);
+}
+.slab .bottom:after, .slab .left:before {
+  background: #6f6f6f;
+  transform: translateZ(-3px) rotateY(-22.5deg);
+}
+.slab .left:before {
+  background: #a3a3a3;
+}
+.slab .left:after {
+  left: auto;
+  right: -15px;
+  background: linear-gradient(to right, #808080 0%, #6f6f6f 100%);
+}
+
+/* ---------- Black front slab ---------- */
+.black {
+  transform: translate3d(2.38px, 2.38px, 5.1px) scale3d(0.98126, 0.99048, 0.167);
+}
+.black .front {
+  border: 1px solid #454545;
+  background: linear-gradient(to right, #131313 0%, #2c2c2c 100%);
+  transform: translate3d(2px, 2px, 2px) scale(0.976, 0.988);
+}
+.black .thickness {
+  border: 1px solid #131313;
+  background: #232323;
+  transform: translate3d(3px, 3px, 5px) scale(0.968, 0.984);
+}
+.black .thickness-end {
+  border: 1px solid #131313;
+  background:
+    linear-gradient(-107deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.1) 60%, rgba(255,255,255,0) 60%, rgba(255,255,255,0) 100%),
+    linear-gradient(to right, #131313 0%, #2c2c2c 100%);
+  background-repeat: no-repeat;
+  transform: translate3d(6px, 6px, 6px) scale(0.945, 0.972);
+}
+.black .top, .black .back, .black .right, .black .bottom, .black .left,
+.black .top:before, .black .top:after, .black .right:before, .black .right:after,
+.black .bottom:before, .black .bottom:after, .black .left:before, .black .left:after {
+  background: #121212;
+}
+.black-back {
+  transform: translate3d(2.38px, 2.38px, -30.1px) scale3d(0.98126, 0.99048, 0.167);
+}
+
+/* ---------- Joins ---------- */
+.slab .join {
+  width: 4px;
+  height: 32px;
+  background: #2c2c2c;
+  box-shadow: inset 2px 0 1px #000, -1px 0 1px #a3a3a3;
+  transform: translate3d(418px, -1px, -1px);
+}
+.slab .right .join:before, .slab .right .join:after,
+.slab .left .join:before, .slab .left .join:after,
+.slab .top .join:before, .slab .top .join:after {
+  content: "";
+  position: absolute;
+  top: -1.6px;
+  width: 4px;
+  height: 3px;
+  background: #2c2c2c50;
+  box-shadow: inset 2px 0 1px #000, -1px 0 1px #a3a3a3;
+  transform: translateZ(1.1px) rotateX(-90deg);
+}
+.slab .right .join:after, .slab .left .join:after, .slab .top .join:after {
+  top: 30px;
+}
+.slab .left .join {
+  transform: translate3d(418px, -1px, 0.5px);
+}
+.slab .left .join:before, .slab .left .join:after {
+  transform: translateZ(-1.1px) rotateX(-90deg);
+}
+.slab .top .join {
+  transform: translate3d(60px, -1px, -1px);
+}
+
+/* ---------- Dock ---------- */
+#dock {
+  top: 50%;
+  left: 50%;
+  width: 80px;
+  height: 11px;
+  margin: -5.5px 0 0 -40px;
+  background: linear-gradient(to right, #2c2c2c 0%, #141414 100%);
+  border-radius: 4px;
+  box-shadow: inset 1px -3px 3px #000, 0 0 2px #a3a3a3;
+  transform: translateZ(0.5px);
+}
+#connector {
+  top: 50%;
+  left: 50%;
+  width: 70px;
+  height: 2px;
+  margin: -1px 0 0 -35px;
+  background: #333;
+  box-shadow: inset 0 1px 0 #000;
+}
+
+/* ---------- Screws ---------- */
+.screws {
+  top: 50%;
+  left: 50px;
+  width: 8px;
+  height: 8px;
+  margin-top: -5px;
+  border: 1px solid #575757;
+  background: #747474;
+  text-align: center;
+  font: bold 6px/8px Verdana, sans-serif;
+  color: #909090;
+  border-radius: 8px;
+  box-shadow: 0 0 1px #a3a3a3;
+  text-shadow: 0 1px 0 rgba(0,0,0,0.4);
+  transform: translateZ(1px);
+}
+.screws-right {
+  left: auto;
+  right: 50px;
+}
+
+/* ---------- Speakers (dots generated by script) ---------- */
+.speaker {
+  top: 50%;
+  left: 15px;
+  overflow: hidden;
+  width: 28px;
+  height: 9px;
+  margin-top: -4.5px;
+  background: linear-gradient(to right, #717274 0%, #b0b1b3 100%);
+  border-radius: 9px;
+  box-shadow: inset 1px -4px 2px rgba(0,0,0,0.5), 0 1px 2px #a3a3a3;
+  transform: translateZ(1px);
+}
+.speaker-right {
+  left: auto;
+  right: 15px;
+}
+.speaker .dot, #speaker-front .dot {
+  position: static;
+  float: left;
+  width: 1px;
+  height: 1px;
+  margin: 0.5px;
+  background: #353638;
+}
+#speaker-front {
+  top: 40px;
+  left: 50%;
+  width: 48px;
+  height: 6px;
+  margin-left: -24px;
+  overflow: hidden;
+  border-top: 3px solid #3c3c3c;
+  background: linear-gradient(to bottom, #b0b1b3 0%, #717274 100%);
+  border-radius: 50px;
+  box-shadow: inset 2px 2px 2px rgba(0,0,0,0.9), inset 1px 3px 1px rgba(255,255,255,0.6), inset 1px -2px 1px rgba(255,255,255,0.6);
+  transform: translateZ(20px);
+}
+
+/* ---------- SIM / hole ---------- */
+#sim {
+  top: 50%;
+  left: 205px;
+  width: 74px;
+  height: 8px;
+  margin-top: -5px;
+  border: 1px solid #727272;
+  background: #969696;
+  border-radius: 8px;
+  box-shadow: inset 0 0 2px rgba(255,255,255,0.4), 0 0 1px rgba(255,255,255,0.7);
+}
+#hole {
+  top: 50%;
+  right: 2.5px;
+  width: 4px;
+  height: 4px;
+  margin-top: -2px;
+  background: #2c2c2c;
+  border-radius: 4px;
+  box-shadow: inset -1px 0 0 #000, 0 0 2px #a3a3a3;
+}
+
+/* ---------- Home button ---------- */
+#home-button {
+  top: 433.2px;
+  left: 50%;
+  width: 46.8px;
+  height: 46.8px;
+  margin-left: -24.4px;
+  border: 1px solid #303030;
+  background: linear-gradient(to right, #4d4d4d 0%, #0d0d0d 100%);
+  border-radius: 50px;
+  box-shadow: inset 0 0 2px #000;
+  transform: translateZ(20px);
+}
+#square {
+  top: 50%;
+  left: 50%;
+  width: 13.2px;
+  height: 13.2px;
+  margin: -8.6px 0 0 -8.6px;
+  border: 2px solid #eee;
+  border-radius: 4px;
+}
+
+/* ---------- SCREEN (video, fitted by height) ---------- */
+#screen {
+  top: 86.7px;
+  left: 50%;
+  width: 218px;
+  height: 328.2px;
+  margin-left: -109px;
+  background: #000;
+  overflow: hidden;
+  transform: translateZ(20px);
+}
+#screen:after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 5px;
+  box-shadow: inset 2px 2px 5px rgba(0,0,0,0.9);
+  transform: translateZ(1px);
+}
+#reel {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  height: 100%;   /* fit by screen height */
+  width: auto;    /* keep natural aspect ratio */
+  object-fit: contain;
+  transform: translateX(-50%) translateZ(1px);
+  display: block;
+}
+
+/* ---------- Webcam ---------- */
+#webcam {
+  top: 40px;
+  left: 76px;
+  width: 10px;
+  height: 10px;
+  background: linear-gradient(to right, #0d0d0d 0%, #4d4d4d 100%);
+  box-shadow: inset 0 0 2px #000;
+  border-radius: 9px;
+  transform: translateZ(20px);
+}
+#flash {
+  top: 50%;
+  left: 50%;
+  width: 4px;
+  height: 4px;
+  margin: -2px 0 0 -2px;
+  background: linear-gradient(45deg, #3558a9 0%, #5b81d2 100%);
+  border-radius: 4px;
+}
+
+/* ---------- Volume buttons ---------- */
+.volume {
+  top: 50%;
+  left: 79px;
+  width: 22px;
+  height: 22px;
+  margin-top: -11px;
+  background: #a8a8a8;
+  color: #d0d0d0;
+  text-align: center;
+  border-radius: 22px;
+  box-shadow: 0 0 5px rgba(0,0,0,0.9), inset 0 0 3px rgba(255,255,255,0.5), inset 0 0 1px #fff, 0 2px 2px rgba(0,0,0,0.3);
+  text-shadow: -1px -1px rgba(0,0,0,0.3);
+  transform: translateZ(0.5px);
+}
+.volume-1, .volume-2, .volume-3, .volume-4, .volume-5 {
+  left: 0;
+  box-shadow: inset 0 0 3px rgba(255,255,255,0.2), inset 0 0 1px #fff, 0 2px 2px rgba(0,0,0,0.1);
+}
+.volume-1 { transform: translateZ(1px); }
+.volume-2 { transform: translateZ(1.5px); }
+.volume-3 { transform: translateZ(2px); }
+.volume-4 { transform: translateZ(2.5px); }
+.volume-5 {
+  font: normal 27px/24px "Times New Roman", serif;
+  transform: translateZ(3px);
+}
+.volume-less {
+  left: 127px;
+}
+.volume-less .volume-5 {
+  font: bold 16px/21px "Times New Roman", serif;
+}
+
+/* ---------- Ringtone switch ---------- */
+#ringtone {
+  top: 50%;
+  left: 19px;
+  margin-top: -8px;
+  width: 33px;
+  height: 16px;
+  background: #999;
+  border-radius: 8px / 10px;
+  box-shadow: inset 0 -1px 2px rgba(0,0,0,0.2), 0 0 1px rgba(255,255,255,0.5);
+  transform: translateZ(0.5px);
+}
+.lock {
+  left: 50%;
+  width: 31px;
+  height: 8px;
+  margin-left: -15.5px;
+  background: #a8a8a8;
+  border-radius: 8px / 5px;
+  box-shadow: 0 0 3px rgba(0,0,0,0.4), inset 0 0 4px rgba(255,255,255,0.5), inset 0 0 1px #fff, 0 2px 2px rgba(0,0,0,0.3);
+  transform: translateZ(0.5px);
+}
+.lock-1, .lock-2, .lock-3, .lock-4, .lock-5 {
+  box-shadow: inset 0 0 4px rgba(255,255,255,0.2), inset 0 0 1px rgba(255,255,255,0.7);
+}
+.lock-1 { transform: translateZ(1px); }
+.lock-2 { transform: translateZ(1.5px); }
+.lock-3 { transform: translateZ(2px); }
+.lock-4 { transform: translateZ(2.5px); }
+.lock-5 { transform: translateZ(3px); }
+
+/* ---------- Earphone / click ---------- */
+#earphone {
+  top: 50%;
+  left: 10px;
+  width: 22px;
+  height: 22px;
+  margin-top: -12px;
+  border: 1px solid #2c2c2c;
+  background: linear-gradient(to right, #333 0%, #141414 100%);
+  border-radius: 24px;
+  box-shadow: inset 0 0 0 2.5px #c5c5c5, 0 0 0 1px #cecece, inset 0 -6px 3px #000, 0 0 1px 1px rgba(255,255,255,0.2);
+  transform: translateZ(-1px);
+}
+#click {
+  top: 50%;
+  left: 45px;
+  width: 4px;
+  height: 4px;
+  margin-top: -2px;
+  background: #2c2c2c;
+  border-radius: 4px;
+  box-shadow: inset -1px 0 0 #000, 0 0 2px rgba(255,255,255,0.9);
+  transform: translateZ(-1px);
+}
+
+/* ---------- On/off button ---------- */
+.on-off {
+  top: 50%;
+  right: 24.5px;
+  width: 41px;
+  height: 10px;
+  margin-top: -5px;
+  background: linear-gradient(to bottom, #d6d6d6 0%, #b6b6b6 100%);
+  border-radius: 10px;
+  box-shadow: 0 0 3px rgba(0,0,0,0.4), inset 0 0 4px rgba(255,255,255,0.5), inset 0 0 1px #fff, 0 2px 2px rgba(0,0,0,0.3);
+  transform: translateZ(-1px);
+}
+.on-off-1, .on-off-2, .on-off-3, .on-off-4 {
+  right: 0;
+  box-shadow: inset 0 0 4px rgba(255,255,255,0.2), inset 0 0 1px rgba(255,255,255,0.7);
+}
+.on-off-1 { transform: translateZ(-1.5px); }
+.on-off-2 { transform: translateZ(-2px); }
+.on-off-3 { transform: translateZ(-2.5px); }
+.on-off-4 { transform: translateZ(-3px); }
+</style>
+</head>
+<body>
+<div id="scene3D">
+  <div id="iphone">
+
+    <div class="slab black">
+      <div class="top"></div>
+      <div class="right"></div>
+      <div class="bottom"></div>
+      <div class="left"></div>
+      <div id="webcam"><div id="flash"></div></div>
+      <div id="speaker-front"></div>
+
+      <!-- SCREEN: looping video, autoplays muted, fitted by height -->
+      <div id="screen">
+        <video id="reel"
+               src="alliy7.mp4"
+               autoplay muted loop playsinline preload="auto"></video>
+      </div>
+
+      <div id="home-button"><div id="square"></div></div>
+      <div class="front thickness-end"></div>
+      <div class="front thickness"></div>
+      <div class="front"></div>
+      <div class="back"></div>
+    </div>
+
+    <div class="slab">
+      <div class="top">
+        <div class="join"></div>
+        <div class="on-off">
+          <div class="on-off on-off-1"></div>
+          <div class="on-off on-off-2"></div>
+          <div class="on-off on-off-3"></div>
+          <div class="on-off on-off-4"></div>
+        </div>
+        <div id="earphone"></div>
+        <div id="click"></div>
+      </div>
+      <div class="right">
+        <div class="join"></div>
+        <div id="sim"><div id="hole"></div></div>
+      </div>
+      <div class="bottom">
+        <div class="speaker"></div>
+        <div class="screws">X</div>
+        <div id="dock"><div id="connector"></div></div>
+        <div class="screws screws-right">X</div>
+        <div class="speaker speaker-right"></div>
+      </div>
+      <div class="left">
+        <div id="ringtone">
+          <div class="lock">
+            <div class="lock lock-1"></div>
+            <div class="lock lock-2"></div>
+            <div class="lock lock-3"></div>
+            <div class="lock lock-4"></div>
+            <div class="lock lock-5"></div>
+          </div>
+        </div>
+        <div class="volume">
+          <div class="volume volume-1"></div>
+          <div class="volume volume-2"></div>
+          <div class="volume volume-3"></div>
+          <div class="volume volume-4"></div>
+          <div class="volume volume-5">+</div>
+        </div>
+        <div class="volume volume-less">
+          <div class="volume volume-1"></div>
+          <div class="volume volume-2"></div>
+          <div class="volume volume-3"></div>
+          <div class="volume volume-4"></div>
+          <div class="volume volume-5">|</div>
+        </div>
+        <div class="join"></div>
+      </div>
+      <div class="front"></div>
+      <div class="back"></div>
+    </div>
+
+    <div class="slab black black-back">
+      <div class="top"></div>
+      <div class="right"></div>
+      <div class="bottom"></div>
+      <div class="left"></div>
+      <div class="front"></div>
+      <div class="back"></div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+(function () {
+  const phone = document.getElementById('iphone');
+  const reel  = document.getElementById('reel');
+  const glare = document.querySelector('.thickness-end');
+
+  // Speaker dots (decorative) generated instead of repeated markup
+  document.querySelectorAll('.speaker, #speaker-front').forEach(function (el) {
+    const n = el.classList.contains('speaker') ? 60 : 90;
+    for (let i = 0; i < n; i++) {
+      const d = document.createElement('div');
+      d.className = 'dot';
+      el.appendChild(d);
+    }
+  });
+
+  // Glare sweep, driven by the same progress value as the spin
+  const CYCLE = 15000; // ms for one full turn at normal speed
+  const glareAnim = glare.animate([
+    { backgroundPosition: '300px 0, 0 0' },
+    { backgroundPosition: '0 0, 0 0', offset: 0.12 },
+    { backgroundPosition: '300px 0, 0 0', offset: 0.15 },
+    { backgroundPosition: '0 0, 0 0', offset: 0.43 },
+    { backgroundPosition: '300px 0, 0 0', offset: 0.57 },
+    { backgroundPosition: '300px 0, 0 0' }
+  ], { duration: CYCLE, iterations: 1, fill: 'both' });
+  glareAnim.pause();
+
+  // Autoplay the video (muted, so browsers allow it)
+  reel.muted = true;
+  const tryPlay = function () { reel.play().catch(function () {}); };
+  tryPlay();
+  reel.addEventListener('canplay', tryPlay);
+
+  // Spin: progress p runs 0..1 per turn. Speed eases down while the
+  // screen faces the viewer (p near 0 or 1), so the image holds longer.
+  const SLOW_FACTOR = 0.2;  // speed multiplier at the front-facing point
+  const SLOW_ZONE   = 0.12; // fraction of a turn either side of front
+  let p = 0;
+  let last = performance.now();
+
+  function frame(now) {
+    const dt = Math.min(now - last, 100) / 1000;
+    last = now;
+
+    const f = p % 1;
+    const dist = Math.min(f, 1 - f);                     // 0 at front, 0.5 at back
+    const speed = SLOW_FACTOR + (1 - SLOW_FACTOR) * Math.min(1, dist / SLOW_ZONE);
+    p += (dt / (CYCLE / 1000)) * speed;
+
+    const q = p % 1;
+    const deg = q * 360;
+    phone.style.transform =
+      'rotateX(' + (45 + deg) + 'deg) rotateY(' + deg + 'deg) rotateZ(' + (45 + deg) + 'deg)';
+
+    glareAnim.currentTime = q * CYCLE;
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
